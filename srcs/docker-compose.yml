@@ -8,6 +8,12 @@ services:
         restart: always
         ports:
         - 127.0.0.1:443:443
+    mariadb:
+		container_name: cmaria
+		build:
+			context: ./requirements/mariadb
+			dockerfile: Dockerfile
+        restart: always
 #  wordpress:
 #    image: wordpress
 #    depends_on:
