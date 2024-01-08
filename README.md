@@ -225,3 +225,17 @@ Tuto suivi :
 Dans le directory nginx,
 docker build -t myimagenginx .
 docker run --name mon_container_nginx -p 127.0.0.1:443:443/tcp myimagenginx -d
+
+
+Setup mariadb
+
+service mysql start
+mysql: unrecognized service
+
+solution:
+[source](https://bobcares.com/blog/mysql-unrecognized-service/)
+chkconfig --list
+to find the correct service name. It was mariadb
+
+where is www.conf?
+https://stackoverflow.com/questions/39054500/what-is-www-conf

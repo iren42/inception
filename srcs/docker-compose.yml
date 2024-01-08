@@ -2,33 +2,64 @@ version: "3.8"
 services:
     nginx:
         container_name: cnginx
+        networks:
+        - inception
         build:
             context: ./requirements/nginx/
             dockerfile: Dockerfile
-        restart: always
+        depends_on:
+        - wordpress
+        env_file: .env
+        volumes:
+        - wordpress-data:/var/www/wordpress
         ports:
         - 127.0.0.1:443:443
-    mariadb:
-		container_name: cmaria
-		build:
-			context: ./requirements/mariadb
-			dockerfile: Dockerfile
         restart: always
-#  wordpress:
-#    image: wordpress
-#    depends_on:
-#        mysql:
-#            restart: true
-#            condition: service_healthy
-#    ports:
-#        - 8085:80
-#    environment:
-#        WORDPRESS_DB_HOST: mysql
-#        WORDPRESS_DB_USER: exampleuser
-#        WORDPRESS_DB_PASSWORD: examplepass
-#        WORDPRESS_DB_NAME: exampledb
-#    volumes:
-#        - ./requirements/wordpress:/var/www/html
+    mariadb:
+        container_name: cmaria
+        networks:
+        - inception # à quel network il appartient
+        build:
+            context: ./requirements/mariadb
+            dockerfile: Dockerfile
+        env_file: .env
+        volumes: # Voir plus bas
+        - mariadb-data:/var/lib/mysql
+        expose:
+        - 3306
+        restart: always
+    wordpress:
+        container_name: cwordpress
+        networks:
+        - inception # à quel network il appartient
+        build:
+            context: ./requirements/wordpress
+            dockerfile: Dockerfile
+        env_file: .env
+        depends_on:
+            mariadb:
+                restart: true
+                condition: service_healthy
+        expose:
+        - 9000
+        volumes:
+        - wordpress-data:/var/www/wordpress
+volumes:
+    wordpress-data:
+        driver: local # ici nous stockons le volume en local
+        driver_opts:
+            type: "none"
+            o: "bind"
+            device: "/home/vboxuser/data/wordpress" #ou stocker en local
+    mariadb-data:
+        driver: local
+        driver_opts:
+            type: "none"
+            o: "bind"
+            device: "/home/vboxuser/data/mariadb"
+networks:
+    inception:
+        driver: bridge
 #
 #  mysql:
 #    image: mysql:8.0
@@ -74,6 +105,3 @@ services:
 #    image: nginx
 #    ports:
 #    - "8080:80"
-#networks:
-#    docker_network:
-#        driver: default
