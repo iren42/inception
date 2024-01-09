@@ -10,8 +10,8 @@ services:
         depends_on:
         - wordpress
         env_file: .env
-        volumes:
-        - wordpress-data:/var/www/wordpress
+          #        volumes:
+          #        - wordpress-data:/var/www/wordpress
         ports:
         - 127.0.0.1:443:443
         restart: always
@@ -23,8 +23,8 @@ services:
             context: ./requirements/mariadb
             dockerfile: Dockerfile
         env_file: .env
-        volumes: # Voir plus bas
-        - mariadb-data:/var/lib/mysql
+          #        volumes: # Voir plus bas
+          #       - mariadb-data:/var/lib/mysql
         expose:
         - 3306
         restart: always
@@ -37,26 +37,24 @@ services:
             dockerfile: Dockerfile
         env_file: .env
         depends_on:
-            mariadb:
-                restart: true
-                condition: service_healthy
+        - mariadb
         expose:
         - 9000
-        volumes:
-        - wordpress-data:/var/www/wordpress
-volumes:
-    wordpress-data:
-        driver: local # ici nous stockons le volume en local
-        driver_opts:
-            type: "none"
-            o: "bind"
-            device: "/home/vboxuser/data/wordpress" #ou stocker en local
-    mariadb-data:
-        driver: local
-        driver_opts:
-            type: "none"
-            o: "bind"
-            device: "/home/vboxuser/data/mariadb"
+          #        volumes:
+          #        - wordpress-data:/var/www/wordpress
+          #volumes:
+          #    wordpress-data:
+          #        driver: local # ici nous stockons le volume en local
+          #        driver_opts:
+          #            type: "none"
+          #            o: "bind"
+          #            device: "/home/iren/data/wordpress" #ou stocker en local
+          #    mariadb-data:
+          #        driver: local
+          #        driver_opts:
+          #            type: "none"
+          #            o: "bind"
+          #            device: "/home/iren/data/mariadb"
 networks:
     inception:
         driver: bridge

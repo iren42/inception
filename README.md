@@ -194,6 +194,11 @@ For each container, a folder is generated that gets mounted. They are called ano
 They are called named volumes. You can reference this volume and it should be used in production.
 
 # My run
+Installer docker engine
+https://docs.docker.com/engine/install/debian/
+Add user to docker group
+https://linuxopsys.com/topics/add-user-to-docker-group
+
 I created all project files and directories.
 Wrote a Makefile by following:
 https://write.vanoix.com/emeric/makefile-et-docker-en-dev
