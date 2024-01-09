@@ -24,10 +24,10 @@ RUN chmod +x wp-cli.phar
 RUN mv wp-cli.phar /usr/local/bin/wp
 
 COPY ./tools/setup.sh /home/
+WORKDIR /var/www/html/
 RUN chmod +x /home/setup.sh
 RUN /bin/bash /home/setup.sh
 #We go the html directory
-WORKDIR /var/www/html/
 EXPOSE 9000
 
 # php-fpm need a directory to be enabled
