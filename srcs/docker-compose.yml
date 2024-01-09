@@ -3,22 +3,22 @@ services:
     nginx:
         container_name: cnginx
         networks:
-        - inception
+        - inception # à quel network il appartient
         build:
             context: ./requirements/nginx/
             dockerfile: Dockerfile
-#       depends_on:
-#        - wordpress
+        depends_on:
+        - wordpress
         env_file: .env
           #        volumes:
           #        - wordpress-data:/var/www/wordpress
         ports:
         - 127.0.0.1:443:443
-        restart: always
+        restart: unless-stopped
     mariadb:
         container_name: cmaria
         networks:
-        - inception # à quel network il appartient
+        - inception
         build:
             context: ./requirements/mariadb
             dockerfile: Dockerfile
@@ -27,19 +27,26 @@ services:
           #       - mariadb-data:/var/lib/mysql
         expose:
         - 3306
-        restart: always
-#    wordpress:
-#        container_name: cwordpress
-#        networks:
-#        - inception # à quel network il appartient
-#        build:
-#            context: ./requirements/wordpress
-#            dockerfile: Dockerfile
-#        env_file: .env
-#        depends_on:
-#        - mariadb
-#        expose:
-#        - 9000
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+            timeout: 20s
+            retries: 10
+    wordpress:
+        container_name: cwordpress
+        networks:
+        - inception
+        build:
+            context: ./requirements/wordpress
+            dockerfile: Dockerfile
+        env_file: .env
+        depends_on:
+            mariadb:
+                condition: service_healthy
+                restart: true
+        expose:
+        - 9000
+        restart: unless-stopped
           #        volumes:
           #        - wordpress-data:/var/www/wordpress
           #volumes:
@@ -58,7 +65,3 @@ services:
 networks:
     inception:
         driver: bridge
-#    healthcheck:
-#        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-#        timeout: 20s
-#        retries: 10

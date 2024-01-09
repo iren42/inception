@@ -11,24 +11,25 @@ RUN apt install -y wget \
 #RUN apt install -y tmux \
 #        vim
 
-RUN wget https://fr.wordpress.org/wordpress-6.4.2-fr_FR.tar.gz -P /var/www
 
-RUN cd /var/www && tar -xzf wordpress-6.4.2-fr_FR.tar.gz && rm wordpress-6.4.2-fr_FR.tar.gz
-
-RUN cp /var/www/wordpress/* /var/www/html
-#RUN		chown -R root:root /var/www/html
+RUN mkdir -p /var/www/html
+RUN chown -R www-data:www-data /var/www/html
+RUN chmod 755 /var/www/html
 
 
 COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d
-#
-#RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-#RUN chmod +x wp-cli.phar
-#RUN mv wp-cli.phar /usr/local/bin/wp
-#
-#COPY ./tools/wordpress_autoconf.sh /home/
-#RUN chmod +x /home/wordpress_autoconf.sh
+
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN chmod +x wp-cli.phar
+RUN mv wp-cli.phar /usr/local/bin/wp
+
+COPY ./tools/setup.sh /home/
+RUN chmod +x /home/setup.sh
+RUN /bin/bash /home/setup.sh
 #We go the html directory
 WORKDIR /var/www/html/
 EXPOSE 9000
 
+# php-fpm need a directory to be enabled
+RUN mkdir -p /run/php
 CMD ["/usr/sbin/php-fpm7.4", "-F"]
