@@ -58,21 +58,7 @@ services:
 networks:
     inception:
         driver: bridge
-#
-#  mysql:
-#    image: mysql:8.0
-#    restart: always
-#    environment:
-#        MYSQL_DATABASE: exampledb
-#        MYSQL_USER: exampleuser
-#        MYSQL_PASSWORD: examplepass
-#    volumes:
-#        - ./requirements/mariadb:/var/lib/mysql
 #    healthcheck:
 #        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
 #        timeout: 20s
 #        retries: 10
-#
-#volumes:
-#    wordpress:
-#    db:
