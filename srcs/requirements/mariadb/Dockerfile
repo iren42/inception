@@ -8,8 +8,10 @@ RUN apt install -y mariadb-server \
 # for debugging purpose
 #RUN apt install -y tmux \
 #        vim
-COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+#COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
-COPY ./tools/mariadb_starter.sh /home/
-RUN chmod +x /home/mariadb_starter.sh
-ENTRYPOINT ["/home/mariadb_starter.sh"]
+COPY ./tools/setup.sh /home/
+RUN chmod +x /home/setup.sh
+ENTRYPOINT ["bash", "/home/setup.sh"]
+
+CMD ["mysqld_safe", "--bind-address=0.0.0.0"]
