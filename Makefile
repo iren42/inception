@@ -35,7 +35,8 @@ prune:
 	docker rm -fv $$(docker ps -qa)
 	docker rmi -f $$(docker images -qa)
 	docker volume rm $$(docker volume ls -q)
-	docker network rm $$(docker network ls -q) 2>/dev/null
+	docker network prune -f
+#	docker network rm $$(docker network ls -q) # this one gives me lots of errors
 #	$(DOCKER_COMPOSE) down --remove-orphans
 #	$(DOCKER_COMPOSE) down --volumes --rmi
 #	$(DOCKER_COMPOSE) down --rmi
