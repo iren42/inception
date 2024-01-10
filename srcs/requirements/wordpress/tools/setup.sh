@@ -21,9 +21,8 @@ else
                           --admin_user=$WP_ADM_USER \
                           --admin_password=$WP_ADM_PASS \
                           --admin_email=$WP_ADM_EMAIL
-#	wp core install --allow-root --url=${WP_URL} --title=${WP_TITLE} --admin_user=${WP_ADM_USER} --admin_password=${WP_ADM_PASS} --admin_email=${WP_ADM_EMAIL}
 	# Adds an extra user with no admin permissions
-#	wp user create --allow-root ${WP_USER} ${WP_USER_EMAIL} --user_pass=${WP_USER_PASS};
+	wp user create --allow-root ${WP_USER} ${WP_USER_EMAIL} --user_pass=${WP_USER_PASS};
     echo "wordpress is ready"
 
 fi
