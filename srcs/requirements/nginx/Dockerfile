@@ -12,7 +12,6 @@ RUN apt install -y nginx openssl
 COPY ./conf/default.conf /etc/nginx/conf.d/
 
 
-
 # Create self-signed certificate
 RUN openssl req -x509 -nodes -days 365 \
     -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=iren.42.fr/UID=iren" \
@@ -20,7 +19,7 @@ RUN openssl req -x509 -nodes -days 365 \
     -keyout /etc/ssl/private/inception.key \
     -out /etc/ssl/certs/inception.crt
 
-
+# Give permissions to nginx
 RUN chmod 755 /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 
