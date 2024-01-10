@@ -244,5 +244,7 @@ to find the correct service name. It was mariadb
 
 cannot alter root
 ERROR 1045 access denied for user 'root'@'localhost' (using password: NO)
-where is www.conf?
+solution not found. Pas besoin de alter root.
+
+where and what is www.conf?
 https://stackoverflow.com/questions/39054500/what-is-www-conf
