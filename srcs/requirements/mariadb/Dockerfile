@@ -11,6 +11,6 @@ COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
 COPY ./tools/setup.sh /home/
 RUN chmod +x /home/setup.sh
-RUN /bin/bash /home/setup.sh
 
-CMD ["mysqld_safe", "--bind-address=0.0.0.0"]
+#CMD ["mysqld_safe", "--bind-address=0.0.0.0"]
+CMD /bin/bash /home/setup.sh
