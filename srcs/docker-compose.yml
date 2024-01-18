@@ -9,7 +9,7 @@ services:
             dockerfile: Dockerfile
         env_file: .env
         volumes:
-        - wordpress-data:/var/www/html
+        - wordpress-data:/var/www/wordpress
         depends_on:
         - wordpress
         ports:
@@ -44,14 +44,11 @@ services:
         env_file: .env
         depends_on:
         - mariadb
-#            mariadb:
-#                condition: service_healthy
-#                restart: true
         expose:
         - "9000"
         restart: unless-stopped
         volumes:
-        - wordpress-data:/var/www/html
+        - wordpress-data:/var/www/wordpress
 volumes:
     wordpress-data:
         driver: local # ici nous stockons le volume en local

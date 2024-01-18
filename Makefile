@@ -8,7 +8,7 @@ DOCKER_COMPOSE	:= docker compose -f $(DC_FILE)
 .PHONY: all
 all:
 	@echo "Launching containers from project $(COMPOSE_PROJECT_NAME)..."
-	$(DOCKER_COMPOSE) up -d
+	$(DOCKER_COMPOSE) up -d --build
 	$(DOCKER_COMPOSE) ps
 
 .PHONY: stop
@@ -24,6 +24,9 @@ down:
 	$(DOCKER_COMPOSE) down --volumes
 	$(DOCKER_COMPOSE) down --remove-orphans
 	docker ps
+
+.PHONY:re
+re: down all
 
 .PHONY: logs
 logs:

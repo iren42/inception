@@ -1,36 +1,45 @@
 FROM debian:bullseye
 
-RUN apt update && apt upgrade -y
+# add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
+#RUN groupadd -r www-data && useradd -r -g www-data www-data --home-dir /var/www/wordpress
 
-RUN apt install -y wget \
+RUN \
+        apt update && apt install -y \
+        wget \
         php7.4 \
         php-fpm \
-        php-mysql 
-#for debugging purpose
-#RUN apt install -y tmux \
-#        vim
+        php-mysql \
+       && rm -rf /var/lib/apt/lists/*;
 
-# /var/www/html is where I want my wordpress files to be
-RUN mkdir -p /var/www/html
-RUN chown -R www-data:www-data /var/www/html
-RUN chmod 755 /var/www/html
+# download wordpress and wp-cli
+WORKDIR /var/www
 
-# localhost listens to port 9000
+RUN \
+    wget https://fr.wordpress.org/wordpress-6.4.2-fr_FR.tar.gz -P /var/www \
+    && tar -xzf wordpress-6.4.2-fr_FR.tar.gz && rm wordpress-6.4.2-fr_FR.tar.gz \
+    && wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar \
+    && mv wp-cli.phar /usr/local/bin/wp
+
+# gives the address on which to accept fastcgi requests (port 9000)
+# and give permissions to exec php-fpm to www-data
 COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d
 
-# prep wordpress setup
-WORKDIR /var/www/html/
-COPY ./tools/setup.sh /home
-RUN chmod +x /home/setup.sh
 
-# download wp-cli
-RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-RUN chmod +x wp-cli.phar
-RUN mv wp-cli.phar /usr/local/bin/wp
+# /var/www/wordpress is where I want my wordpress files to be
+# php-fpm need a directory to be enabled
+RUN mkdir -p /var/www/wordpress \
+    && chown -R www-data:www-data /var/www/wordpress \
+    && chmod 775 /var/www/wordpress; \
+    mkdir -p /run/php
+
+
+
+COPY ./tools/setup.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/setup.sh
+WORKDIR /var/www/wordpress/
+
 
 EXPOSE 9000
-
-# php-fpm need a directory to be enabled
-RUN mkdir -p /run/php
-
-CMD /bin/bash /home/setup.sh
+ENTRYPOINT ["/usr/local/bin/setup.sh"]
+CMD ["/usr/sbin/php-fpm7.4", "-F"]

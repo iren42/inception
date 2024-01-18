@@ -248,3 +248,10 @@ solution not found. Pas besoin de alter root.
 
 where and what is www.conf?
 https://stackoverflow.com/questions/39054500/what-is-www-conf
+
+most used commands to debug
+docker build -t myimage .
+docker run -itd --env-file=srcs/.env myimage
+docker exec -it mycontainer bash
+
+secure mariadb with a password
