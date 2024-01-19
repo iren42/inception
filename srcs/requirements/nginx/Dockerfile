@@ -9,9 +9,11 @@ RUN apt update && apt install -y \
     -newkey rsa:4096 -sha256 \
     -keyout /etc/ssl/private/inception.key \
     -out /etc/ssl/certs/inception.crt; \
+    groupadd -r dev --gid=9001 && useradd -r -g dev --uid=9001 dev \
+    && usermod -aG dev www-data; \
     mkdir -p /var/www/wordpress \
-    && chmod 755 /var/www/wordpress \
-    && chown -R www-data:www-data /var/www/wordpress
+    && chown -R dev:dev /var/www/wordpress \
+    && chmod 755 /var/www/wordpress; 
 # Create self-signed certificate
 # Give permissions to nginx
 

@@ -13,11 +13,16 @@ else
     service mariadb start
 
     echo "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;" | mysql
+    echo "here1"
     echo "CREATE USER IF NOT EXISTS $MYSQL_USER@'%' IDENTIFIED BY '$MYSQL_PASSWORD';" | mysql
+    echo "here2"
     echo "GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';" | mysql
+    echo "here3"
     echo "FLUSH PRIVILEGES;" | mysql
+    echo "here4"
 # password protect mariadb root
     echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';" | mysql
+    echo "here5"
     echo "database is setup"
 
     # restart to make sure all our configurations are set in place
