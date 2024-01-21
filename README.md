@@ -2,8 +2,9 @@ Makefile has to build the docker images
 using docker-compose.yml
 
 # subject inspection/comprehension
-## what is docker-compose.yml?
+## what is Docker Compose and docker-compose.yml?
 Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application's services. Then, with a single command, you create and start all the services from your configuration. [source](https://docs.docker.com/compose/#:~:text=Compose%20is%20a%20tool%20for,to%20configure%20your%20application's%20services.)
+Il s’agit d’un **outil de ligne de commande**, similaire au client Docker, utilisant un fichier de description spécifiquement formaté pour assembler les applications à partir de conteneurs multiples et de les exécuter sur un hôte unique. [source](https://datascientest.com/docker-guide-complet)
 
 ## how to install a virtual machine? 
 [ubuntu doc on virtualbox](https://doc.ubuntu-fr.org/virtualbox)
@@ -13,9 +14,6 @@ Compose is a tool for defining and running multi-container Docker applications. 
 Docker builds images automatically by reading the instructions from a Dockerfile which is a text file that contains all commands, in order, needed to build a given image.
 Dockerfile is a text document that contains commands to assemble an image. Docker can then build an image by reading those instructions.
 
-## what is Docker Compose?
-Il s’agit d’un **outil de ligne de commande**, similaire au client Docker, utilisant un fichier de description spécifiquement formaté pour assembler les applications à partir de conteneurs multiples et de les exécuter sur un hôte unique. [source](https://datascientest.com/docker-guide-complet)
-
 ## what is a docker image?
 Une image Docker est **un modèle en lecture seule**, utiliser pour créer des conteneurs Docker. Elle est composée de plusieurs couches empaquetant toutes les installations, dépendances, bibliothèques, processus et codes d’application nécessaires pour un environnement de conteneur pleinement opérationnel. [source](https://datascientest.com/docker-guide-complet)
 
@@ -24,10 +22,21 @@ It is a running instance of an image. A container is a way to package applicatio
 Technically, it is made of layers of images. At the base of most containers, we have a linux base image, and it is important that it is small in size, thus alpine.
 
 ## what is the (docker) service?
-also called the docker engine. It's the main part of the docker that makes the virtualization. It is a server with a long-running doaemon process "dockerd". It manages images & containers.k
+also called the docker engine. It's the main part of the docker that makes the virtualization. It is a server with a long-running doaemon process "dockerd". It manages images & containers.
 
 ## other definitions
 "penultimate stable version of Alpine or Debian"? = l'avant derniere version de debian ou alpine
+Le Web est systeme permettant l'acces a un ensemble de donnees reliees entre elles par des liens hypertext.
+Web =! internet
+Internet est une infrastructure permettant d'envoyer et de recevoir des donnees entre differentes machines. Box internet, wifi, reseaux, etc. Le Web est une application accessible depuis internet.
+Un navigateur est un logiciel permettant d'afficher des sites web. 
+Un moteur de recherche est un site web permettant de trouver le lien vers d'autres sites web.
+Tout le contenu d'une page web est contenu dans un serveur web. 
+Une adresse IP est un numero d'identification qui est attribue a une machine connectee a internet. C'est comme un numero de tel.
+Le serveur DNS est un service qui permet de trouver une adresse IP grace a son URL comme un annuaire.
+Le navigateur envoie un message au serveur. C'est une requete http. un langage de commnication utilise par le serveur et le navigateur pour se communiquer les pages web. Le https est sa version securisee.
+Le html est un langage de description de pages web, il permet de presenter le contenu dans le navigateur.
+[source](https://www.youtube.com/watch?v=RHljpE7pZh8)
 
 ## instructions
 write Dockerfiles, one per service
@@ -38,22 +47,57 @@ It is then forbidden to pull ready-made Docker images, as well as using services
 
 ## what is NGINX, TLSv1.2 TLSv1.3?
 read [How To Configure Nginx to use TLS 1.2 / 1.3 only](https://www.cyberciti.biz/faq/configure-nginx-to-use-only-tls-1-2-and-1-3/)
-  
-TLS is an acronym for Transport Layer Security.
-wordpress
-php-fpm
+
+Nginx est un serveur web open source leger et performant. Il est souvent utilise comme reverse proxy. 
+En tant que reverse proxy, il est l'intermediaire entre notre serveur web et les clients. 
+Il permet la distribution de la charge d'un site unique sur plusieurs serveurs, le chiffrement TLS, il protege contre les attaques.
+
+TLS is an acronym for Transport Layer Security. C'est un protocole de securisation des echanges par reseau informatique.
+
+wordpress lives on a web server, and delivers web content to a user's web client (also called web browser).
+
+php-fpm est un gestionnaire de processus fastcgi. Il permet la communication entre un serveur web et PHP.
+It is an advanced, high-performance FastCGI process manager for PHP. It resolves the concurrency issue of PHP's built-in server by spawing multiple workers, which can handle multiple requests simultaneously.
+However, php-fpm cannot directly manage incoming HTTP traffic, necessitating a web server to act as a reverse proxy.
+
 mariaDB
 ## what is a volume?
 It allows us to have persistent data.
 
-## what is a docker-network?
+## what is a docker network?
+[source](https://www.youtube.com/watch?v=bKFMS5C4CG0&list=PLIhvC56v63IJlnU4k60d0oFIrsbXEivQo&index=4)
 Docker creates its isolated Docker network where the containers are running in.
+```
+ip address show
+
+sudo docker network ls
+```
+The first network, the default bridge, it is docker0 and its ip address is . Driver = network type.
+When we deploy our containers in the default network, docker automatically creates virtual ethernet interfaces, ethxxx, and connected it to the docker0 bridge.
+
+```
+bridge link
+```
+to show the interfaces and the fact that they are connected to docker0.
+
+
+```
+sudo docker inspect
+```
+to show the containers' name and their individual ip addresses.
+
+Create our own docker network
+```
+sudo docker network create mynetwork
+```
+It is preferred to create our network instead of using docker's default network because of isolation. User-defined bridge is protected from the default network, they can't talk to each other (ping).
 
 
 ## PID 1?
 [PID 1 medium, Boutnaru](https://medium.com/@boutnaru/the-linux-process-journey-pid-1-init-60765a069f17)
- Mostly known as “init”. init is the first Linux user-mode process created, which runs until the system shuts down. init manages the services (called demons under Linux, more on them in a future post). Also, if we check the process tree of a Linux machine we will find that the root of the tree is init.
- There are multiple implementation of init. Ubuntu 22.04 uses systemd.
+Mostly known as “init”. init is the first Linux user-mode process created, which runs until the system shuts down. init manages the services (called demons under Linux). 
+Also, if we check the process tree (on command line pstree) of a Linux machine we will find that the root of the tree is init.
+There are multiple implementation of init. Ubuntu 22.04 uses systemd.
 ## what are the best practices for writing Dockerfiles?
 
 https://docs.docker.com/develop/develop-images/guidelines/
@@ -69,6 +113,7 @@ Selecting a specific version of a Docker image
 An OS kernel is the middle man between the hardware and the applications.
 Docker virtualizes the OS applications layer, it uses the kernel of the host.
 A VM virtualizes a complete system (the kernel + the applications layer).
+
 Applications run on the kernel layer.
 They are both virtualization tools.
 
@@ -89,19 +134,8 @@ Docker Hub is a registry, you can host private or public repositories on it for 
 
 Companies create custom images for their applications.
 
-## How to run containers
-Pull an image to download locally:
-docker pull nginx:1.23
-
-Docker Hub is the default registry.
-
-Run a Docker image:
-docker run nginx:1.23
-
-Running a Docker image that is not already in your computer, pull that Docker image and run it.
-
 ### About ports
-Port binding = bind the container's port to the host's port to make the service availble to the outside world.
+Port binding = bind the container's port to the host's port to make the service available to the outside world.
 The container runs in some port. Each application has a standard port on which its running.
 nginx port 80
 redis port 6379
@@ -116,19 +150,29 @@ Only 1 service can run on a specific port on the host. So e.g. only 1 service ca
 It's a standard to use the same port on your host as the container is using.
 
 ### Basic commands
+Pull an image to download locally:
+docker pull nginx:1.23
+
+Docker Hub is the default registry.
+
+Run a Docker image:
+docker run nginx:1.23
+
+Running a Docker image that is not already in your computer, pull that Docker image and run it.
+
 docker run creates a new container every time, it doesn't re-use the previous container. 
 
 docker ps -a 
 to see all running and stopped containers.
 
-To run the previous container:
+To start a container that has already run:
 docker start <container_id>
 
 or
 
 docker start <container_name>
 
-To override the auto-generated container_name:
+To override the auto-generated container name:
 docker run --name <container_name> -d -p 8080:80 nginx:1.23
 
 Delete tous les containers, et leurs volumes:
@@ -139,7 +183,6 @@ docker rmi -f $(docker images -aq)
 
 ## How can I create my own Docker image for MY use-case application?
 By writing a Dockerfile.
-
 Dockerfiles start from a parent image or "base image". with the "FROM" keyword.
 
 ### Structure of Dockerfile:
@@ -170,6 +213,7 @@ docker network create <network_name>
 
 Docker run options,
 -e to overwrite the default env variables
+--env-file to send a file with env var
 --net to specify the network
 
 ## Running multiple services
@@ -213,7 +257,7 @@ MariaDB est un fork de MySQL.
 Les développeurs de MariaDB s’assurent que chaque version est compatible avec la version correspondante de MySQL. MariaDB adopte non seulement les fichiers de définition des données et des tables de MySQL, mais utilise également des protocoles clients, des APIs clients, des ports et des sockets identiques. L’objectif est de permettre aux utilisateurs de MySQL de passer à MariaDB sans problème.
 [source](https://www.hostinger.fr/tutoriels/mariadb-vs-mysql)
 
-Oops ! D'apres divers tutoriels trouvés sur github, je devais commencer a creer une image nginx en premier.
+Oops ! D'apres divers tutoriels trouvés sur github, je devais commencer par creer une image nginx.
 
 Dans ma VM linux,
 
@@ -223,16 +267,19 @@ sudo service stop mysql
 
 sudo systemctl stop nginx
 sudo service stop nginx
+
 Sinon, http://localhost me donne la page d'accueil de nginx deja installé sur mon OS et je peux pas afficher mon nginx a moi.
+
+Editer le fichier /etc/hosts pour ajouter la ligne 127.0.0.1 iren.42.fr
 
 Ecrire le Dockerfile et le nginx.conf.
 Tuto suivi :
 Dans le directory nginx,
 docker build -t myimagenginx .
-docker run --name mon_container_nginx -p 127.0.0.1:443:443/tcp myimagenginx -d
+docker run -itd --name cnginx -p 443:443/tcp inginx 
 
 
-Setup mariadb
+Setup mariadb:
 
 service mysql start
 mysql: unrecognized service
@@ -240,18 +287,21 @@ mysql: unrecognized service
 solution:
 [source](https://bobcares.com/blog/mysql-unrecognized-service/)
 chkconfig --list
-to find the correct service name. It was mariadb
+To find the correct service name. It was mariadb.
 
 cannot alter root
 ERROR 1045 access denied for user 'root'@'localhost' (using password: NO)
-solution not found. Pas besoin de alter root.
+I think it was because my password for root had a space in it.
 
 where and what is www.conf?
 https://stackoverflow.com/questions/39054500/what-is-www-conf
+C'est le fichier de configuration de php-fpm.
 
 most used commands to debug
 docker build -t myimage .
 docker run -itd --env-file=srcs/.env myimage
 docker exec -it mycontainer bash
 
-secure mariadb with a password
+How to secure mariadb with a password?
+Avec ALTER
+
