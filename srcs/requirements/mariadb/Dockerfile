@@ -1,6 +1,6 @@
 FROM debian:bullseye
 
-RUN apt update && apt install -y \
+RUN apt-get update && apt-get install -y \
         mariadb-server \
        && rm -rf /var/lib/apt/lists/*  
 
@@ -9,7 +9,7 @@ COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
 # good practice to make root the owner of the entrypoint file
 COPY --chown=root ./tools/setup.sh /usr/local/bin/
-RUN chmod 500 /usr/local/bin/setup.sh
+RUN chmod +x /usr/local/bin/setup.sh
 
 # default directory for mariadb
 WORKDIR /var/lib/mysql

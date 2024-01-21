@@ -82,7 +82,7 @@ to show the interfaces and the fact that they are connected to docker0.
 
 
 ```
-sudo docker inspect
+sudo docker inspect netword_name
 ```
 to show the containers' name and their individual ip addresses.
 

@@ -1,6 +1,6 @@
 FROM debian:bullseye
 
-RUN apt update && apt install -y \
+RUN apt-get update && apt-get install -y \
         nginx \
         openssl \
        && rm -rf /var/lib/apt/lists/*; \
@@ -9,17 +9,11 @@ RUN apt update && apt install -y \
     -newkey rsa:4096 -sha256 \
     -keyout /etc/ssl/private/inception.key \
     -out /etc/ssl/certs/inception.crt; \
-    groupadd -r dev --gid=9001 && useradd -r -g dev --uid=9001 dev \
-    && usermod -aG dev www-data; \
-    mkdir -p /var/www/wordpress \
-    && chown -R dev:dev /var/www/wordpress \
-    && chmod 755 /var/www/wordpress; 
+    mkdir -p /var/www/wordpress; \
+    mkdir -p /var/run/nginx
 # Create self-signed certificate
-# Give permissions to nginx
+# Create directory for nginx files
 
 COPY ./conf/default.conf /etc/nginx/conf.d/
-
-# Create directory for nginx files
-RUN mkdir -p /var/run/nginx
 
 CMD ["nginx", "-g", "daemon off;"]
