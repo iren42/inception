@@ -6,9 +6,9 @@ RUN \
         php7.4 \
         php-fpm \
         php-mysql \
-        gosu \
-       && rm -rf /var/lib/apt/lists/*; \
-        gosu nobody true
+#      gosu \
+       && rm -rf /var/lib/apt/lists/*;
+#        gosu nobody true
 
 # download wordpress and wp-cli
 WORKDIR /var/www
@@ -24,32 +24,32 @@ RUN \
 RUN groupadd -r dev --gid=9001 && useradd -r -g dev --uid=9001 dev \
     && usermod -aG dev www-data
 # Grant him sudo privileges
-RUN mkdir -p /etc/sudoers.d/ && echo "dev ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/dev && \
-    chmod 0440 /etc/sudoers.d/dev
-# gives the address on which to accept fastcgi requests (port 9000)
-# and give permissions to exec php-fpm to www-data
+#RUN mkdir -p /etc/sudoers.d/ && echo "dev ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/dev && \
+#    chmod 0440 /etc/sudoers.d/dev
+
+# php-fpm conf file gives the address on which to accept fastcgi requests (port 9000)
 COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d
 
+# I could not disable the error.log for php-fpm
+# so, I created the error.log file for php-fpm to be able to write on it
 RUN touch /var/log/error.log;  \
     chown -R dev:dev /var/log/ \
-    && chmod 666 /var/log/error.log
-
-# /var/www/wordpress is where I want my wordpress files to be
-# php-fpm need a directory to create its PID file
-RUN mkdir -p /var/www/wordpress \
-    && chown -R dev:dev /var/www/wordpress \
+    && chmod 660 /var/log/error.log; \
+    chown -R dev:dev /var/www/wordpress \
     && chmod 755 /var/www/wordpress; \
     mkdir -p /run/php \
     && chown -R dev:dev /run/php
+# php-fpm need the directory /run/php to create its PID file
 
-
-
+# it's good practice to make root the owner of the entrypoint.sh
 COPY --chown=root ./tools/setup.sh /usr/local/bin/
-RUN chmod 555 /usr/local/bin/setup.sh 
+RUN chmod +x /usr/local/bin/setup.sh 
 WORKDIR /var/www/wordpress/
 
 
 EXPOSE 9000
+# make it impossible to run a container as root
+RUN chsh -s /usr/sbin/nologin root
 USER dev
 ENTRYPOINT ["/usr/local/bin/setup.sh"]
 CMD ["/usr/sbin/php-fpm7.4", "-F"]
