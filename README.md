@@ -54,13 +54,33 @@ Il permet la distribution de la charge d'un site unique sur plusieurs serveurs, 
 
 TLS is an acronym for Transport Layer Security. C'est un protocole de securisation des echanges par reseau informatique.
 
+## what is wordpress
+WordPress est un système de gestion de contenu gratuit, libre et open-source. Ce logiciel écrit en PHP repose sur une base de données MySQL et est distribué par la fondation WordPress.org
 wordpress lives on a web server, and delivers web content to a user's web client (also called web browser).
+[source](https://fr.wikipedia.org/wiki/WordPress)
 
+## what is php-fpm, fastcgi
 php-fpm est un gestionnaire de processus fastcgi. Il permet la communication entre un serveur web et PHP.
 It is an advanced, high-performance FastCGI process manager for PHP. It resolves the concurrency issue of PHP's built-in server by spawing multiple workers, which can handle multiple requests simultaneously.
 However, php-fpm cannot directly manage incoming HTTP traffic, necessitating a web server to act as a reverse proxy.
 
-mariaDB
+PHP-FPM (FastCGI Process Manager) is a PHP-FPM is an alternative PHP FastCGI implementation that is widely used to serve PHP applications efficiently and securely. It works in conjunction with a web server (e.g., Nginx or Apache) to handle PHP requests via the FastCGI protocol.
+### why do i need it
+Wordpress uses PHP.
+PHP is a high-level programming language. As a result, PHP scripts need to be compiled before a web server (specifically its underlying processor hardware) can comprehend it.
+### how it works
+PHP-FPM operates in tandem with the web server (e.g., Nginx or Apache). When a PHP request is received, the web server forwards it to the PHP-FPM process manager, which then handles the request via a pool of child processes. These child processes are separate instances of PHP, each capable of handling individual requests independently.
+
+How FastCGI works:
+Client sends an HTTP request to the web server.
+The web server passes the request to the FastCGI application via a socket or TCP/IP connection, along with the necessary environment variables and request data.
+The FastCGI application processes the request and generates the dynamic content (e.g., HTML, JSON, etc.).
+Instead of terminating the application process, the FastCGI process remains alive and waits for the next request.
+The web server receives the response from the FastCGI application and sends it back to the client in the HTTP response.
+[source](https://www.plesk.com/blog/various/php-fpm-the-future-of-php-handling/#:~:text=PHP%2DFPM%20is%20able%20to,PHP%2DFPM%20allowing%20opcode%20caching)
+[source](https://dev.to/arsalanmee/understanding-php-fpm-a-comprehensive-guide-3ng8)
+[source](https://medium.com/@miladev95/cgi-vs-fastcgi-vs-php-fpm-afbc5a886d6d)
+## mariaDB
 ## what is a volume?
 It allows us to have persistent data.
 
@@ -304,4 +324,12 @@ docker exec -it mycontainer bash
 
 How to secure mariadb with a password?
 Avec ALTER
-
+# what is next?
+## remove a warning
+[tuto](https://dev.to/ivanbernatovic/the-best-way-to-set-up-lemp-stack-for-local-development-2021-edition-22lc)
+In the fpm conf file, 
+Change the [www] to [your_user] to change the pool name
+Change the line user = www-data to user = your_user
+Change the line group = www-data to group = your_user
+Change the listen = /run/php/php8.0-fpm.sock to listen = /run/php/php8.0-your_user-fpm.sock
+Now run sudo systemctl restart php8.0-fpm.service to load the new config and restart the main FPM process.
